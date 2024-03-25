@@ -107,6 +107,7 @@ private[sharing] case class Metadata(
     size: java.lang.Long = null,
     numFiles: java.lang.Long = null) extends Action {
   override def wrap: SingleAction = SingleAction(metaData = this)
+  def getDataFormat : String = format.provider
 }
 
 private[sharing] sealed trait Action {

@@ -29,6 +29,7 @@ import org.apache.spark.sql.catalyst.analysis.{Resolver, UnresolvedAttribute}
 import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder
 import org.apache.spark.sql.catalyst.expressions.{And, Attribute, Cast, Expression, Literal, SubqueryExpression}
 import org.apache.spark.sql.execution.datasources.{FileFormat, HadoopFsRelation}
+import org.apache.spark.sql.execution.datasources.csv.CSVFileFormat
 import org.apache.spark.sql.execution.datasources.parquet.ParquetFileFormat
 import org.apache.spark.sql.sources.BaseRelation
 import org.apache.spark.sql.types.{DataType, StructField, StructType}
@@ -37,6 +38,7 @@ import io.delta.sharing.client.{DeltaSharingClient, DeltaSharingRestClient}
 import io.delta.sharing.client.model.{AddFile, CDFColumnInfo, DeltaTableMetadata, Metadata, Protocol, Table => DeltaSharingTable}
 import io.delta.sharing.client.util.ConfUtils
 import io.delta.sharing.spark.perf.DeltaSharingLimitPushDown
+
 
 
 /**
@@ -172,9 +174,13 @@ class RemoteSnapshot(
 
   lazy val partitionSchema = new StructType(metadata.partitionColumns.map(c => schema(c)).toArray)
 
-  def fileFormat: FileFormat = new ParquetFileFormat()
-
-
+  def fileFormat: FileFormat = {
+    // TODO: Add other data formats
+    if (metadata.getDataFormat.equals("csv")) {
+      new CSVFileFormat
+    }
+    new ParquetFileFormat()
+  }
 
 
   def getTablePath: Path = tablePath

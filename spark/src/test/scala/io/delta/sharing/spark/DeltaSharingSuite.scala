@@ -35,12 +35,14 @@ class DeltaSharingSuite extends QueryTest with SharedSparkSession with DeltaShar
   import testImplicits._
 
   integrationTest("table1") {
-    val tablePath = testProfileFile.getCanonicalPath + "#s2.default.t1"
+    val tablePath = testProfileFile.getCanonicalPath + "#s2.default.delta_tbl"
     val expected = Seq(
       Row(sqlTimestamp("2021-04-27 23:32:02.07"), sqlDate("2021-04-28")),
       Row(sqlTimestamp("2021-04-27 23:32:22.421"), sqlDate("2021-04-28"))
     )
-   spark.read.format("deltaSharing").load(tablePath)
+   val df = spark.read.format("deltaSharing").load(tablePath)
+    df.printSchema()
+    df.show()
 /*    withTable("delta_sharing_test") {
       sql(s"CREATE TABLE delta_sharing_test USING deltaSharing LOCATION '$tablePath'")
       checkAnswer(sql(s"SELECT * FROM delta_sharing_test"), expected)
