@@ -45,7 +45,7 @@ acquire_sbt_jar () {
   #   DEFAULT_ARTIFACT_REPOSITORY=https://artifacts.internal.com/libs-release/
   URL1=${DEFAULT_ARTIFACT_REPOSITORY:-https://repo1.maven.org/maven2/}org/scala-sbt/sbt-launch/${SBT_VERSION}/sbt-launch-${SBT_VERSION}.jar
   ##JAR=build/sbt-launch-${SBT_VERSION}.jar
-  JAR=/Users/sharadsingh/Documents/sbt-launch-1.5.3.jar
+  JAR=/Users/bharvisw/Downloads/sbt-launch-1.6.1.jar
 
 
   sbt_jar=$JAR
