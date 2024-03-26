@@ -55,7 +55,7 @@ trait DeltaSharingIntegrationTest extends SparkFunSuite with BeforeAndAfterAll {
     super.beforeAll()
     if (shouldRunIntegrationTest) {
     //  pidFile = Files.createTempFile("delta-sharing-server", ".pid").toFile
-      testProfileFile = new File("/Users/bharvisw/workspace/hackathon/profile.json")
+      testProfileFile = new File("/Users/sharadsingh/Dev/share_profile/dt.json")
      /* FileUtils.writeStringToFile(testProfileFile,
         s"""{
           |  "shareCredentialsVersion": 1,
@@ -106,7 +106,8 @@ trait DeltaSharingIntegrationTest extends SparkFunSuite with BeforeAndAfterAll {
 
   override def afterAll(): Unit = {
     if (shouldRunIntegrationTest) {
-/*      try {
+/*
+ try {
         org.apache.hadoop.fs.FileSystem.closeAll()
         if (process != null) {
           process.destroy()
