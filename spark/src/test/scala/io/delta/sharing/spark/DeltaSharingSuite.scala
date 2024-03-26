@@ -46,7 +46,7 @@ class DeltaSharingSuite extends QueryTest with SharedSparkSession with DeltaShar
 /*    withTable("delta_sharing_test") {
       sql(s"CREATE TABLE delta_sharing_test USING deltaSharing LOCATION '$tablePath'")
       checkAnswer(sql(s"SELECT * FROM delta_sharing_test"), expected)
-    }*/
+    } */
     printf("test done")
   }
 

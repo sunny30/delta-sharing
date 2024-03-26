@@ -36,7 +36,9 @@ import io.delta.sharing.client.{DeltaSharingClient, DeltaSharingRestClient}
 import io.delta.sharing.client.model.{AddFile, CDFColumnInfo, DeltaTableMetadata, Metadata, Protocol, Table => DeltaSharingTable}
 import io.delta.sharing.client.util.ConfUtils
 import io.delta.sharing.spark.perf.DeltaSharingLimitPushDown
+import org.apache.spark.sql.execution.datasources.json.JsonFileFormat
 import org.apache.spark.sql.execution.datasources.orc.OrcFileFormat
+import org.apache.spark.sql.execution.datasources.text.TextFileFormat
 
 
 
@@ -173,12 +175,25 @@ class RemoteSnapshot(
 
   lazy val partitionSchema = new StructType(metadata.partitionColumns.map(c => schema(c)).toArray)
 
+  def getAvroFileFormat: FileFormat = {
+    val clazzName = "org.apache.spark.sql.avro.AvroFileFormat"
+    val fileFormatClass = getClass.getClassLoader.loadClass(clazzName)
+    fileFormatClass.getDeclaredConstructor().newInstance().asInstanceOf[FileFormat]
+  }
+
   def fileFormat: FileFormat = {
     // TODO: Add other data formats
-    if (metadata.getDataFormat.equals("orc")) {
-      new OrcFileFormat
+    metadata.getDataFormat.toLowerCase() match {
+      case "orc" => new OrcFileFormat
+      case "csv" => new CSVFileFormat
+      case "parquet" => new ParquetFileFormat
+      case "json" => new JsonFileFormat
+      case "text" => new TextFileFormat
+      case "avro" => getAvroFileFormat
+      case _ => new ParquetFileFormat
+
     }
-    new ParquetFileFormat()
+
   }
 
 
