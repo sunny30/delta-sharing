@@ -35,7 +35,7 @@ class DeltaSharingSuite extends QueryTest with SharedSparkSession with DeltaShar
   import testImplicits._
 
   integrationTest("table1") {
-    val tablePath = testProfileFile.getCanonicalPath + "#s2.default.delta_tbl"
+    val tablePath = testProfileFile.getCanonicalPath + "#s2.default.orc_tbl_convt"
     val expected = Seq(
       Row(sqlTimestamp("2021-04-27 23:32:02.07"), sqlDate("2021-04-28")),
       Row(sqlTimestamp("2021-04-27 23:32:22.421"), sqlDate("2021-04-28"))

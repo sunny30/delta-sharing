@@ -19,7 +19,6 @@ package io.delta.sharing.spark
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.{TimeZone, UUID}
-
 import org.apache.hadoop.fs.Path
 import org.apache.spark.SparkException
 import org.apache.spark.delta.sharing.{CachedTableManager, TableRefreshResult}
@@ -33,11 +32,11 @@ import org.apache.spark.sql.execution.datasources.csv.CSVFileFormat
 import org.apache.spark.sql.execution.datasources.parquet.ParquetFileFormat
 import org.apache.spark.sql.sources.BaseRelation
 import org.apache.spark.sql.types.{DataType, StructField, StructType}
-
 import io.delta.sharing.client.{DeltaSharingClient, DeltaSharingRestClient}
 import io.delta.sharing.client.model.{AddFile, CDFColumnInfo, DeltaTableMetadata, Metadata, Protocol, Table => DeltaSharingTable}
 import io.delta.sharing.client.util.ConfUtils
 import io.delta.sharing.spark.perf.DeltaSharingLimitPushDown
+import org.apache.spark.sql.execution.datasources.orc.OrcFileFormat
 
 
 
@@ -176,8 +175,8 @@ class RemoteSnapshot(
 
   def fileFormat: FileFormat = {
     // TODO: Add other data formats
-    if (metadata.getDataFormat.equals("csv")) {
-      new CSVFileFormat
+    if (metadata.getDataFormat.equals("orc")) {
+      new OrcFileFormat
     }
     new ParquetFileFormat()
   }
