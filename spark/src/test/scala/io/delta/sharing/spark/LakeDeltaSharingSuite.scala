@@ -4,7 +4,6 @@ import org.apache.spark.sql.QueryTest
 import org.apache.spark.sql.test.SharedSparkSession
 
 class LakeDeltaSharingSuite extends QueryTest with SharedSparkSession with DeltaSharingIntegrationTest {
-  import testImplicits._
 
   integrationTest("csv_tbl") {
     val tablePath = testProfileFile.getCanonicalPath + "#hackathon_share.hackathon_db.csv_tbl"
@@ -38,13 +37,12 @@ class LakeDeltaSharingSuite extends QueryTest with SharedSparkSession with Delta
     df.show()
   }
 
-  // Need to fix build to add avro dep
-/*  integrationTest("avro_tbl") {
+  integrationTest("avro_tbl") {
     val tablePath = testProfileFile.getCanonicalPath + "#hackathon_share.hackathon_db.avro_tbl"
 
     var df = spark.read.format("deltaSharing").load(tablePath)
     df.printSchema()
     df.show()
-  }*/
-
   }
+
+}

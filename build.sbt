@@ -76,6 +76,7 @@ lazy val spark = (project in file("spark")) dependsOn(client) settings(
   scalaStyleSettings,
   releaseSettings,
   libraryDependencies ++= Seq(
+    "org.apache.spark" %% "spark-avro" % sparkVersion % "provided",
     "org.apache.spark" %% "spark-sql" % sparkVersion % "provided",
     "org.apache.spark" %% "spark-catalyst" % sparkVersion % "test" classifier "tests",
     "org.apache.spark" %% "spark-core" % sparkVersion % "test" classifier "tests",
