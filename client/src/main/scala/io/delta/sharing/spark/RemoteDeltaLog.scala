@@ -107,7 +107,11 @@ private[sharing] class RemoteDeltaLog(
       dataSchema = snapshotToUse.schema,
       bucketSpec = None,
       snapshotToUse.fileFormat,
-      Map.empty)(spark)
+      if (snapshotToUse.metadata.getDataFormat.equalsIgnoreCase("csv")) {
+        Map("header" -> "true")
+      } else {
+        Map.empty
+      })(spark)
   }
 }
 
