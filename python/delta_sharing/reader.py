@@ -95,6 +95,8 @@ class DeltaSharingReader:
             timestamp=self._timestamp
         )
 
+        format = response.metadata.format.provider
+        format_opts = response.metadata.format.options
         schema_json = loads(response.metadata.schema_string)
 
         if len(response.add_files) == 0 or self._limit == 0:
@@ -105,13 +107,13 @@ class DeltaSharingReader:
         if self._limit is None:
             pdfs = [
                 DeltaSharingReader._to_pandas(
-                    file, converters, False, None) for file in response.add_files
+                    file, converters, False, None, format, format_opts) for file in response.add_files
             ]
         else:
             left = self._limit
             pdfs = []
             for file in response.add_files:
-                pdf = DeltaSharingReader._to_pandas(file, converters, False, left)
+                pdf = DeltaSharingReader._to_pandas(file, converters, False, left, format, format_opts)
                 pdfs.append(pdf)
                 left -= len(pdf)
                 assert (
@@ -136,6 +138,8 @@ class DeltaSharingReader:
     def table_changes_to_pandas(self, cdfOptions: CdfOptions) -> pd.DataFrame:
         response = self._rest_client.list_table_changes(self._table, cdfOptions)
 
+        format = response.metadata.format.provider
+        format_opts = response.metadata.format.options
         schema_json = loads(response.metadata.schema_string)
 
         if len(response.actions) == 0:
@@ -144,7 +148,7 @@ class DeltaSharingReader:
         converters = to_converters(schema_json)
         pdfs = []
         for action in response.actions:
-            pdf = DeltaSharingReader._to_pandas(action, converters, True, None)
+            pdf = DeltaSharingReader._to_pandas(action, converters, True, None, format, format_opts)
             pdfs.append(pdf)
 
         return pd.concat(pdfs, axis=0, ignore_index=True, copy=False)
@@ -172,7 +176,10 @@ class DeltaSharingReader:
         action: FileAction,
         converters: Dict[str, Callable[[str], Any]],
         for_cdf: bool,
-        limit: Optional[int]
+        limit: Optional[int],
+        format: Optional[str],
+        format_opts: Optional[Dict]
+
     ) -> pd.DataFrame:
         url = urlparse(action.url)
         if "storage.googleapis.com" in (url.netloc.lower()):
@@ -186,7 +193,7 @@ class DeltaSharingReader:
         else:
             filesystem = fsspec.filesystem(protocol)
 
-        pa_dataset = dataset(source=action.url, format="parquet", filesystem=filesystem)
+        pa_dataset = dataset(source=action.url, format=format, filesystem=filesystem)
         pa_table = pa_dataset.head(limit) if limit is not None else pa_dataset.to_table()
         pdf = pa_table.to_pandas(
             date_as_object=True, use_threads=False, split_blocks=True, self_destruct=True

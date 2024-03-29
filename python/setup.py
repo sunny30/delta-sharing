@@ -43,12 +43,13 @@ setup(
     python_requires='>=3.7',
     install_requires=[
         'pandas',
-        'pyarrow>=4.0.0',
+        'pyarrow>=15.0.2',
         'fsspec>=0.7.4',
         'requests',
         'aiohttp',
         'dataclasses;python_version<"3.7"',
         'yarl>=1.6.0',
+        'colorama>=0.4.3'
     ],
     extras_require={
         's3': ['s3fs'],
